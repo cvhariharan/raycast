@@ -1,0 +1,5 @@
+.cert
+.env.development
+.env
+build
+node_modules
