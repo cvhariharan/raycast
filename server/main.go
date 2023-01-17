@@ -9,6 +9,7 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"net"
 	"net/http"
 	"os/exec"
 	"strings"
@@ -21,6 +22,7 @@ import (
 	"github.com/pion/webrtc/v3/pkg/media"
 	"github.com/pion/webrtc/v3/pkg/media/h264writer"
 	"github.com/pion/webrtc/v3/pkg/media/ivfwriter"
+	"github.com/skip2/go-qrcode"
 )
 
 var compress = false
@@ -172,9 +174,33 @@ func main() {
 	http.Handle("/", fs)
 
 	http.Handle("/sdp", handleSDP(stdin))
+
+	log.Println("Serving at https://" + getLocalIP() + ":8080")
+
+	qr, err := qrcode.New("https://"+getLocalIP()+":8080", qrcode.Medium)
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println(qr.ToSmallString(true))
+
 	http.ListenAndServeTLS(":8080", "./localhost.crt", "./localhost.key", nil)
 
 	wg.Wait()
+}
+
+func getLocalIP() string {
+	addrs, err := net.InterfaceAddrs()
+	if err != nil {
+		return ""
+	}
+	for _, address := range addrs {
+		if ipnet, ok := address.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
+			if ipnet.IP.To4() != nil {
+				return ipnet.IP.String()
+			}
+		}
+	}
+	return ""
 }
 
 // Encode encodes the input in base64

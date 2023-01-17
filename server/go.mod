@@ -6,6 +6,7 @@ require (
 	github.com/pion/interceptor v0.1.12
 	github.com/pion/rtcp v1.2.10
 	github.com/pion/webrtc/v3 v3.1.50
+	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 )
 
 require (
