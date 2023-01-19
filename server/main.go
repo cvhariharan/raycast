@@ -32,11 +32,14 @@ type SDPRequest struct {
 }
 
 var wg sync.WaitGroup
+var rw sync.Mutex
 
 func webrtcStart(w http.ResponseWriter, r *http.Request, stdin io.WriteCloser) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Headers", "*")
 	w.Header().Set("Content-Type", "application/json")
+
+	rw.Lock()
 
 	m := &webrtc.MediaEngine{}
 
@@ -109,6 +112,9 @@ func webrtcStart(w http.ResponseWriter, r *http.Request, stdin io.WriteCloser) {
 
 	peerConnection.OnICEConnectionStateChange(func(connectionState webrtc.ICEConnectionState) {
 		fmt.Printf("ICE Connection State has changed: %s\n", connectionState.String())
+		if connectionState.String() == "failed" || connectionState.String() == "disconnected" {
+			rw.Unlock()
+		}
 	})
 
 	peerConnection.OnTrack(func(t *webrtc.TrackRemote, r *webrtc.RTPReceiver) {
