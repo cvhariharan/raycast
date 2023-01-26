@@ -6,6 +6,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"os"
 	"sync"
 
 	"github.com/cvhariharan/raycast/handlers"
@@ -22,8 +23,13 @@ func handleSDP(stdin io.WriteCloser, wg *sync.WaitGroup) http.Handler {
 }
 
 func main() {
-	var wg sync.WaitGroup
+	if _, err := os.Stat("/dev/video10"); err != nil {
+		log.Println("v4l2loopback module not loaded")
+		fmt.Println("Execute as root: modprobe v4l2loopback video_nr=10 exclusive_caps=1 card_label=\"VirtualCam\"")
+		return
+	}
 
+	var wg sync.WaitGroup
 	ffmpeg := video.NewFFmpegEncoder(&wg)
 
 	fs := http.FileServer(http.Dir("../build"))
