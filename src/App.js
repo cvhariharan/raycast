@@ -8,8 +8,7 @@ const App = () => {
     const [remote, setRemote] = useState('')
     let video = useRef()
     
-    const configuration = {iceServers: [{urls: 'stun:stun.l.google.com:19302'}]};
-    let peer = useRef(new RTCPeerConnection(configuration))
+    let peer = useRef(new RTCPeerConnection())
 
     const getMedia = async () => { 
         let stream = null;
