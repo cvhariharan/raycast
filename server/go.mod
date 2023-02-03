@@ -3,6 +3,7 @@ module github.com/cvhariharan/raycast
 go 1.19
 
 require (
+	github.com/hashicorp/mdns v1.0.5
 	github.com/pion/interceptor v0.1.12
 	github.com/pion/rtcp v1.2.10
 	github.com/pion/webrtc/v3 v3.1.50
@@ -11,6 +12,7 @@ require (
 
 require (
 	github.com/google/uuid v1.3.0 // indirect
+	github.com/miekg/dns v1.1.41 // indirect
 	github.com/pion/datachannel v1.5.5 // indirect
 	github.com/pion/dtls/v2 v2.1.5 // indirect
 	github.com/pion/ice/v2 v2.2.12 // indirect
